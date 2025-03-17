@@ -39,7 +39,7 @@ class RekeningBank {
     }
 }
 
-public class Rekening_Main {
+public class RekeningBankMain {
     public static void main(String[] args) {
         // Membuat dua objek rekening
         RekeningBank rekening1 = new RekeningBank("202410370110241", "Ahmad Zaki", 5000000);

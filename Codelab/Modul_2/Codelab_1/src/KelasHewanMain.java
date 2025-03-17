@@ -1,4 +1,3 @@
-
 // Kelas Hewan
 class Hewan {
     // Atribut
@@ -27,7 +26,7 @@ class Hewan {
 }
 
 // Kelas Main
-public class Hewan_Main {
+public class KelasHewanMain {
     public static void main(String[] args) {
         // Membuat objek hewan1 dan hewan2 dengan variabel tambahan
         Hewan hewan1 = new Hewan("Kucing", "Mamalia", "Nyann~~", "Putih", 2);
