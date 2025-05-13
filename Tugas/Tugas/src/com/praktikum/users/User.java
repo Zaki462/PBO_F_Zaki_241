@@ -1,4 +1,6 @@
-public class User {
+package com.praktikum.users;
+
+public abstract class User {
     private String nama;
     private String nim;
 
@@ -31,4 +33,5 @@ public class User {
     public void displayInfo() {
         System.out.println("User: " + nama + ", NIM: " + nim);
     }
+    abstract void displayAppMenu(java.util.Scanner scanner); //method abstrak yang dideklarasikan di dalam kelas abstrak atau interface
 }
