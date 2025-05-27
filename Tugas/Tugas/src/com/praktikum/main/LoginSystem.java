@@ -1,52 +1,94 @@
 package com.praktikum.main;
 
-import com.praktikum.users.*;
 import java.util.Scanner;
 
+import com.praktikum.users.ConsoleColor;
+import com.praktikum.users.Mahasiswa;
+import com.praktikum.users.Admin;
+import com.praktikum.users.User;
+
 public class LoginSystem {
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final int MAX_ATTEMPTS = 3;
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n=== Sistem Login ===");
+            System.out.println("1. Login sebagai Mahasiswa");
+            System.out.println("2. Login sebagai Admin");
+            System.out.println("3. Keluar");
+            System.out.print("Pilih opsi (1-3): ");
 
-        Admin admin = new Admin("Sugeng Tumblr", "202410370110241", "admin241", "password241");
-        Mahasiswa mahasiswa = new Mahasiswa("Ahmad Fakhruddin Zaki", "202410370110241");
+            String pilihan = scanner.nextLine().trim();
 
-        System.out.println("=== Sistem Login ===");
-        System.out.println("1. Login sebagai Admin");
-        System.out.println("2. Login sebagai Mahasiswa");
-        System.out.print("Pilih menu (1/2): ");
-        int pilihan = scanner.nextInt();
-        scanner.nextLine(); // Clear buffer
+            switch (pilihan) {
+                case "1":
+                    if (attemptLogin("Mahasiswa")) return;
+                    break;
+                case "2":
+                    if (attemptLogin("Admin")) return;
+                    break;
+                case "3":
+                    System.out.println(ConsoleColor.green("Terima kasih telah menggunakan sistem."));
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println(ConsoleColor.red("Pilihan tidak valid. Silakan coba lagi."));
+            }
+        }
+    }
 
-        if (pilihan == 1) {
-            System.out.print("Masukkan Username: ");
-            String username = scanner.nextLine();
-            System.out.print("Masukkan Password: ");
-            String password = scanner.nextLine();
+    private static boolean attemptLogin(String role) {
+        int attempts = 0;
 
-            if (admin.login(username, password)) {
-                admin.displayInfo();
-                admin.displayAppMenu(scanner); //Memanggil menu aplikasi untuk objek admin
-            } else {
-                System.out.println("Login Admin gagal! Username atau password salah.");
+        while (attempts < MAX_ATTEMPTS) {
+            User user = role.equals("Mahasiswa") ? loginMahasiswa() : loginAdmin();
+            if (user != null) {
+                System.out.println(ConsoleColor.green("\nLogin berhasil sebagai " + role + "."));
+                user.displayInfo(); // menampilkan info akun
+                user.displayAppMenu(scanner); // polymorphic call
+                return true;
             }
 
-        } else if (pilihan == 2) {
-            System.out.print("Masukkan Nama: ");
-            String nama = scanner.nextLine();
-            System.out.print("Masukkan NIM: ");
-            String nim = scanner.nextLine();
-
-            if (mahasiswa.login(nama, nim)) {
-                mahasiswa.displayInfo();
-                mahasiswa.displayAppMenu(scanner); //Memanggil menu aplikasi untuk objek mahasiswa
+            attempts++;
+            int sisa = MAX_ATTEMPTS - attempts;
+            if (sisa > 0) {
+                System.out.println(ConsoleColor.red("Kesempatan tersisa: " + sisa));
             } else {
-                System.out.println("Login Mahasiswa gagal! Nama atau NIM salah.");
+                System.out.println(ConsoleColor.red("\nAnda telah gagal login 3 kali. Sistem keluar."));
+                System.exit(0);
             }
+        }
+        return false;
+    }
 
-        } else {
-            System.out.println("Pilihan tidak valid.");
+    private static User loginMahasiswa() {
+        System.out.print("\nMasukkan Nama: ");
+        String nama = scanner.nextLine().trim();
+        System.out.print("Masukkan NIM: ");
+        String nim = scanner.nextLine().trim();
+
+        if (nama.isEmpty() || nim.isEmpty()) {
+            System.out.println(ConsoleColor.red("Nama dan NIM tidak boleh kosong!"));
+            return null;
         }
 
-        scanner.close();
+        Mahasiswa mahasiswa = new Mahasiswa(nama, nim);
+        return mahasiswa.login(nama, nim) ? mahasiswa : null;
+    }
+
+    private static User loginAdmin() {
+        System.out.print("\nMasukkan Username: ");
+        String username = scanner.nextLine().trim();
+        System.out.print("Masukkan Password: ");
+        String password = scanner.nextLine().trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            System.out.println(ConsoleColor.red("Username dan Password tidak boleh kosong!"));
+            return null;
+        }
+
+        Admin admin = new Admin(username, password);
+        return admin.login(username, password) ? admin : null;
     }
 }

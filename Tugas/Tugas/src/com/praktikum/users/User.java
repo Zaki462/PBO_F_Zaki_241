@@ -1,37 +1,32 @@
 package com.praktikum.users;
 
 public abstract class User {
-    private String nama;
-    private String nim;
+    protected String nama;
+    protected String nim;
+    protected String password;
 
-    public User(String nama, String nim) {
-        this.nama = nama;
-        this.nim = nim;
-    }
-
-    public String getNama() {
-        return nama;
-    }
-
-    public void setNama(String nama) {
+    // Konstruktor protected hanya untuk subclass
+    protected User(String nama) {
         this.nama = nama;
     }
 
-    public String getNim() {
-        return nim;
-    }
+    public String getNama() { return nama; }
+    public void setNama(String nama) { this.nama = nama; }
 
-    public void setNim(String nim) {
-        this.nim = nim;
-    }
+    public String getNim() { return nim; }
+    public void setNim(String nim) { this.nim = nim; }
 
-    public boolean login(String input1, String input2) {
-        // Ini method yang akan dioverride
-        return false;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public void displayInfo() {
-        System.out.println("User: " + nama + ", NIM: " + nim);
+        System.out.println("Nama: " + nama);
+        if (nim != null) {
+            System.out.println("NIM: " + nim);
+        }
     }
-    abstract void displayAppMenu(java.util.Scanner scanner); //method abstrak yang dideklarasikan di dalam kelas abstrak atau interface
+
+    public abstract boolean login(String inputNama, String inputCredential);
+
+    public abstract void displayAppMenu(java.util.Scanner scanner);
 }
